@@ -9,13 +9,24 @@ class StudentModel {
     public function getAllStudents() {
         $query = "SELECT * FROM students";
         $result = mysqli_query($this->conn, $query);
-        return $result;
+        
+        $students = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $students[] = $row;
+        }
+        
+        return $students;
     }
+    
 
     public function getStudentById($student_id) {
-        $query = "SELECT * FROM students WHERE id = $student_id";
-        $result = mysqli_query($this->conn, $query);
-        return mysqli_fetch_assoc($result);
+        $stmt = $this->conn->prepare("SELECT * FROM students WHERE id = ?");
+        $stmt->bind_param("i", $student_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $student = $result->fetch_assoc();
+        $stmt->close();
+        return $student;
     }
 
     public function addStudent($name, $address, $phone) {
@@ -43,5 +54,21 @@ class StudentModel {
         $query = "DELETE FROM students WHERE id = $student_id";
         return mysqli_query($this->conn, $query);
     }
+
+    public function searchStudents($search_query) {
+        $search_query = mysqli_real_escape_string($this->conn, $search_query);
+        $query = "SELECT * FROM students WHERE name LIKE '%$search_query%' OR address LIKE '%$search_query%' OR phone LIKE '%$search_query%'";
+        $result = mysqli_query($this->conn, $query);
+        
+        $students = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $students[] = $row;
+        }
+        
+        return $students;
+    }
+    
+
+    
 }
 ?>

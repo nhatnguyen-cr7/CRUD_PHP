@@ -1,29 +1,6 @@
 <?php
-include '../config/database.php';
-
-if (isset($_GET['id'])) {
-    $id = $_GET['id'];
-
-    $query = "SELECT * FROM students WHERE id = $id";
-    $result = mysqli_query($connection, $query);
-
-    if (mysqli_num_rows($result) == 1) {
-        $row = mysqli_fetch_assoc($result);
-        $name = $row['name'];
-        $address = $row['address'];
-        $phone = $row['phone'];
-    } else {
-        header("Location: index.php?status=record_not_found");
-        exit();
-    }
-
-    mysqli_close($connection);
-} else {
-    header("Location: index.php");
-    exit();
-}
+require_once '../controller/edit_controller.php';
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
