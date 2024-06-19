@@ -6,6 +6,7 @@ class StudentModel {
         $this->conn = $connection;
     }
 
+
     public function getAllStudents() {
         $query = "SELECT * FROM students";
         $result = mysqli_query($this->conn, $query);
@@ -67,8 +68,48 @@ class StudentModel {
         
         return $students;
     }
-    
 
+    public function getStudentsByPage($limit, $offset) {
+        $stmt = $this->conn->prepare("SELECT * FROM students LIMIT ? OFFSET ?");
+        $stmt->bind_param("ii", $limit, $offset);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $students = $result->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+        return $students;
+    }
+
+    public function getTotalStudents() {
+        $result = $this->conn->query("SELECT COUNT(*) AS total FROM students");
+        $row = $result->fetch_assoc();
+        return $row['total'];
+    }
+    
+    public function getStudentsByPageWithSort($limit, $offset, $sort, $order) {
+        $validColumns = ['id', 'name', 'address', 'phone'];
+        if (!in_array($sort, $validColumns)) {
+            $sort = 'id'; 
+        }
+        $order = strtoupper($order) === 'DESC' ? 'DESC' : 'ASC';
+
+        $sql = "SELECT * FROM students";
+        $sql .= " ORDER BY $sort $order";
+        $sql .= " LIMIT $limit OFFSET $offset";
+
+        $result = mysqli_query($this->conn, $sql);
+        $students = [];
+
+        if ($result) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $students[] = $row;
+            }
+        }
+    
+        return $students;
+    }
+    
+    
+    
     
 }
 ?>

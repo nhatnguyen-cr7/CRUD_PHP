@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="container">
-        <div class="row">
+        <div class="row justify-content-center mt-5">
             <div class="col-md-9">
                 <div class="card">
                     <div class="card-header">
@@ -20,7 +20,7 @@
                             if ($_GET['status'] == 'success') {
                                 echo '<div class="alert alert-success">New record created successfully</div>';
                             } else {
-                                echo '<div class="alert alert-danger">Error: ' . $_GET['message'] . '</div>';
+                                echo '<div class="alert alert-danger">Error! <br> ' . $_GET['message'] . '</div>';
                             }
                         }
                         ?>
